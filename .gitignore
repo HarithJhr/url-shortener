@@ -1,0 +1,25 @@
+# Maven
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# IntelliJ
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# H2 database (optional)
+*.mv.db
+*.trace.db
+
+# Build
+*.class
+
+# Env files
+.env
