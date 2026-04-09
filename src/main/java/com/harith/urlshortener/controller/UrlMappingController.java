@@ -5,6 +5,7 @@ import com.harith.urlshortener.dto.CreateShortUrlResponse;
 import com.harith.urlshortener.model.UrlMapping;
 import com.harith.urlshortener.service.UrlMappingService;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,9 @@ import java.util.Optional;
 public class UrlMappingController {
 
     private final UrlMappingService service;
+
+    @Value("${app.base-url")
+    private String baseUrl;
 
     public UrlMappingController(UrlMappingService service) {
         this.service = service;
@@ -32,7 +36,7 @@ public class UrlMappingController {
 
         CreateShortUrlResponse response = new CreateShortUrlResponse(
                 saved.getShortCode(),
-                "http://localhost:8080/" + saved.getShortCode(),
+                baseUrl + "/" + saved.getShortCode(),
                 saved.getLongUrl()
         );
 
@@ -60,7 +64,14 @@ public class UrlMappingController {
 
     @DeleteMapping("/api/urls/{id}")
     public ResponseEntity<?> deleteUrl(@PathVariable Long id) {
-        service.deleteById(id);
-        return ResponseEntity.ok(Map.of("message", "Deleted successfully"));
+        boolean isValidId = service.isValidId(id);
+
+        if (isValidId) {
+            service.deleteById(id);
+            return ResponseEntity.ok(Map.of("message", "Deleted successfully"));
+        } else  {
+            return ResponseEntity.badRequest().body(Map.of("error", "id not found"));
+        }
+
     }
 }

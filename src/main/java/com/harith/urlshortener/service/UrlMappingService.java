@@ -32,6 +32,10 @@ public class UrlMappingService {
         return repository.findAll();
     }
 
+    public boolean isValidId(Long id) {
+        return repository.findById(id).isPresent();
+    }
+
     public void deleteById(Long id) {
         repository.deleteById(id);
     }
