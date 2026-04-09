@@ -19,7 +19,7 @@ public class UrlMappingController {
 
     private final UrlMappingService service;
 
-    @Value("${app.base-url")
+    @Value("${app.base-url}")
     private String baseUrl;
 
     public UrlMappingController(UrlMappingService service) {
