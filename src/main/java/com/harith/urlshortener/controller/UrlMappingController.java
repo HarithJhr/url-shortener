@@ -43,7 +43,7 @@ public class UrlMappingController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{shortCode}")
+    @GetMapping("/{shortCode:[a-zA-Z0-9]{6,}}")
     public void redirectToLongUrl(@PathVariable String shortCode, HttpServletResponse response) throws IOException {
         Optional<UrlMapping> result = service.getByShortCode(shortCode);
 
@@ -70,7 +70,7 @@ public class UrlMappingController {
             service.deleteById(id);
             return ResponseEntity.ok(Map.of("message", "Deleted successfully"));
         } else  {
-            return ResponseEntity.badRequest().body(Map.of("error", "id not found"));
+            return ResponseEntity.status(404).body(Map.of("error", "id not found"));
         }
 
     }
