@@ -11,7 +11,7 @@ public class CreateShortUrlResponse {
         this.longUrl = longUrl;
     }
 
-    public String getShortCOde() {
+    public String getShortCode() {
         return shortCode;
     }
 
