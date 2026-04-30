@@ -2,34 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>URL Shortener</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/index.js" defer></script>
 </head>
-
 <body>
-    <div class="container">
-        <h1>URL SHORTENER</h1>
-        <p>Enter a URL to shorten.</p>
+<div class="container">
+    <h1>URL Shortener</h1>
+    <p>Create short, shareable links and manage them from your account.</p>
 
-        <form id="urlForm">
-            <label for="longUrl">URL</label>
-            <input
-                    type="url"
-                    id="longUrl"
-                    name="longUrl"
-                    placeholder="Enter a URL"
-                    required
-            />
-            <button type="submit">Shorten</button>
-        </form>
+    <a href="/oauth2/authorization/google">
+        <button>Log in with Google</button>
+    </a>
 
-        <div id="message"></div>
-
-        <div id="result" class="hidden">
-            <p>Your shortened URL:</p>
-            <a id="shortenedUrl" href="#" target="_blank"></a>
-        </div>
-    </div>
+    <a href="/shorten.html">
+        <button>Go to Shortener</button>
+    </a>
+</div>
 </body>
+</html>
