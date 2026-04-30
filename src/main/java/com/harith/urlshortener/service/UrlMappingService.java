@@ -1,7 +1,11 @@
 package com.harith.urlshortener.service;
 
+import com.harith.urlshortener.dto.CreateShortUrlResponse;
 import com.harith.urlshortener.model.UrlMapping;
 import com.harith.urlshortener.repository.UrlMappingRepository;
+import com.harith.urlshortener.repository.UserRepository;
+import com.harith.urlshortener.model.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,16 +16,36 @@ import java.util.Random;
 public class UrlMappingService {
 
     private final UrlMappingRepository repository;
+    private final UserRepository userRepository;
     private final Random random = new Random();
 
-    public UrlMappingService(UrlMappingRepository repository) {
+    @Value("${app.base-url}")
+    private String appBaseUrl;
+
+    public UrlMappingService(UrlMappingRepository repository, UserRepository userRepository) {
         this.repository = repository;
+        this.userRepository = userRepository;
     }
 
-    public UrlMapping createShortUrl(String longUrl) {
+    public CreateShortUrlResponse createShortUrl(String longUrl, String googleId) {
+
+        User user = userRepository.findByGoogleId(googleId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         String shortCode = generateUniqueShortCode();
-        UrlMapping urlMapping = new UrlMapping(longUrl, shortCode);
-        return repository.save(urlMapping);
+
+        UrlMapping mapping = new UrlMapping();
+        mapping.setLongUrl(longUrl);
+        mapping.setShortCode(shortCode);
+        mapping.setClickCount(0L);
+
+        mapping.setUser(user);
+
+        repository.save(mapping);
+
+        String shortUrl = appBaseUrl + "/" + shortCode;
+
+        return new CreateShortUrlResponse(shortCode, shortUrl, longUrl);
     }
 
     public Optional<UrlMapping> getByShortCode(String shortCode) {
@@ -65,5 +89,9 @@ public class UrlMappingService {
         }
 
         return code.toString();
+    }
+
+    public List<UrlMapping> getLinksByUser(User user) {
+        return repository.findByUser(user);
     }
 }

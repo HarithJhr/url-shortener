@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,20 +29,19 @@ public class UrlMappingController {
     }
 
     @PostMapping("/api/urls")
-    public ResponseEntity<?> createShortUrl(@RequestBody CreateShortUrlRequest request) {
-        if (request.getLongUrl() == null || request.getLongUrl().isBlank()) {
-            return ResponseEntity.badRequest().body(Map.of("error", "longUrl is required"));
+    public ResponseEntity<?> createShortUrl(
+            @RequestBody CreateShortUrlRequest request,
+            @AuthenticationPrincipal OidcUser principal
+    ) {
+        if (principal == null) {
+            return ResponseEntity.status(401).body("Not authenticated");
         }
 
-        UrlMapping saved = service.createShortUrl(request.getLongUrl());
+        String googleId = principal.getSubject();
 
-        CreateShortUrlResponse response = new CreateShortUrlResponse(
-                saved.getShortCode(),
-                baseUrl + "/" + saved.getShortCode(),
-                saved.getLongUrl()
+        return ResponseEntity.ok(
+                service.createShortUrl(request.getLongUrl(), googleId)
         );
-
-        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{shortCode:[a-zA-Z0-9]{6,}}")
