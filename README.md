@@ -16,12 +16,13 @@ Security, scalability, persistence, and deployment concerns are still being impr
 * View stored URLs
 * View URL click count
 * Delete saved URLs
+* User authentication with OAuth2 (Google)
 
 ---
 
 ## 📝 TODO
 
-* Add user authentication and ownership of links
+* ~~Add user authentication and ownership of links~~
 * Add persistent database storage
 * Improve short code generation algorithm
 * Improve input validation and sanitization
