@@ -13,13 +13,17 @@ form.addEventListener("submit", async (e) => {
     resultDiv.classList.add("hidden")
 
     try {
-        const response = await fetch(`/api/urls`, {
+
+        const csrfToken = await fetchCsrfToken();
+
+        const response = await fetch("/api/urls", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                [csrfToken.headerName]: csrfToken.token
             },
             body: JSON.stringify({ longUrl: longUrl })
-        })
+        });
 
         if (!response.ok) {
             throw new Error("Failed to shorten URL")
