@@ -36,6 +36,12 @@ button {
     cursor: pointer;
 }
 
+img {
+    height: 50px;
+    width: 50px;
+    display: block;
+}
+
 #message {
     margin-top: 16px;
     color: red;

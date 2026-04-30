@@ -7,17 +7,23 @@
     <script src="/js/index.js" defer></script>
 </head>
 <body>
-<div class="container">
-    <h1>URL Shortener</h1>
-    <p>Create short, shareable links and manage them from your account.</p>
+    <div class="container">
+        <h1>URL Shortener</h1>
 
-    <a href="/oauth2/authorization/google">
-        <button>Log in with Google</button>
-    </a>
+        <div id="authSection">
+            <a href="/oauth2/authorization/google">
+                <button>Log in with Google</button>
+            </a>
+        </div>
 
-    <a href="/shorten.html">
-        <button>Go to Shortener</button>
-    </a>
-</div>
+        <div id="userSection" style="display: none;">
+            <p id="welcomeText"></p>
+
+            <a href="/shorten.html"><button>Shorten URL</button></a>
+            <a href="/my-links.html"><button>My Links</button></a>
+            <a href="/profile.html"><button>Profile</button></a>
+            <a href="/logout"><button>Logout</button></a>
+        </div>
+    </div>
 </body>
 </html>

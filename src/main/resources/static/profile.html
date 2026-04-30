@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/profile.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Profile</h1>
+
+        <div id="profileSection" style="display: none;">
+            <img id="profilePic" alt="Profile picture" src="" />
+            <p><strong>Name:</strong> <span id="name"></span></p>
+            <p><strong>Email:</strong> <span id="email"></span></p>
+
+            <a href="/"><button>Home</button></a>
+        </div>
+
+        <div id="errorSection" style="display: none;">
+            <p>You are not logged in.</p>
+            <a href="/"><button>Go Home</button></a>
+        </div>
+    </div>
+</body>
+</html>
