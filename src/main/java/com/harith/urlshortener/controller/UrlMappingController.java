@@ -1,11 +1,13 @@
 package com.harith.urlshortener.controller;
 
 import com.harith.urlshortener.dto.CreateShortUrlRequest;
-import com.harith.urlshortener.dto.CreateShortUrlResponse;
 import com.harith.urlshortener.model.UrlMapping;
+import com.harith.urlshortener.model.User;
+import com.harith.urlshortener.repository.UserRepository;
 import com.harith.urlshortener.service.UrlMappingService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,12 +22,17 @@ import java.util.Optional;
 public class UrlMappingController {
 
     private final UrlMappingService service;
+    private final UserRepository userRepository;
 
     @Value("${app.base-url}")
     private String baseUrl;
 
-    public UrlMappingController(UrlMappingService service) {
+    public UrlMappingController(
+            UrlMappingService service,
+            UserRepository userRepository
+    ) {
         this.service = service;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/api/urls")
@@ -64,15 +71,20 @@ public class UrlMappingController {
     }
 
     @DeleteMapping("/api/urls/{id}")
-    public ResponseEntity<?> deleteUrl(@PathVariable Long id) {
-        boolean isValidId = service.isValidId(id);
+    public ResponseEntity<?> deleteUrl(
+            @PathVariable Long id,
+            @AuthenticationPrincipal OidcUser oidcUser
+    ) {
+        User user = userRepository.findByEmail(oidcUser.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (isValidId) {
-            service.deleteById(id);
-            return ResponseEntity.ok(Map.of("message", "Deleted successfully"));
-        } else  {
-            return ResponseEntity.status(404).body(Map.of("error", "id not found"));
+        boolean urlExists = service.deleteUrlForUser(id, user);
+
+        if (!urlExists) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "URL not found"));
         }
 
+        return ResponseEntity.ok(Map.of("message", "Deleted successfully"));
     }
 }

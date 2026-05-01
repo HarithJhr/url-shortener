@@ -43,7 +43,7 @@ public class SecurityConfig {
                                 "/api/**"
                         ).authenticated()
 
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth
                         .userInfoEndpoint(userInfo -> userInfo
@@ -53,6 +53,9 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID", "XSRF-TOKEN")
                 );
 
         return http.build();

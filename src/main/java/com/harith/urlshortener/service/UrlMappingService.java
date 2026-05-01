@@ -2,9 +2,9 @@ package com.harith.urlshortener.service;
 
 import com.harith.urlshortener.dto.CreateShortUrlResponse;
 import com.harith.urlshortener.model.UrlMapping;
+import com.harith.urlshortener.model.User;
 import com.harith.urlshortener.repository.UrlMappingRepository;
 import com.harith.urlshortener.repository.UserRepository;
-import com.harith.urlshortener.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -56,14 +56,6 @@ public class UrlMappingService {
         return repository.findAll();
     }
 
-    public boolean isValidId(Long id) {
-        return repository.findById(id).isPresent();
-    }
-
-    public void deleteById(Long id) {
-        repository.deleteById(id);
-    }
-
     public void incrementClickCount(UrlMapping urlMapping) {
         urlMapping.setClickCount(urlMapping.getClickCount() + 1);
         repository.save(urlMapping);
@@ -93,5 +85,17 @@ public class UrlMappingService {
 
     public List<UrlMapping> getLinksByUser(User user) {
         return repository.findByUser(user);
+    }
+
+    public boolean deleteUrlForUser(Long id, User user) {
+        Optional<UrlMapping> urlMapping = repository.findByIdAndUser(id, user);
+
+        if (urlMapping.isEmpty()) {
+            return false;
+        }
+
+        repository.delete(urlMapping.get());
+
+        return true;
     }
 }
